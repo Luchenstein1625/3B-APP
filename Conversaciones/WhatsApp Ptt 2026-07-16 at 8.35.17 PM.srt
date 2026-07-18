@@ -1,0 +1,4 @@
+1
+00:00:00,140 --> 00:00:23,020
+Oye pero no le disborrar a nada, dale los click de visualizar pero no borres porque es el aplicativo de producción, no nos pasará en un ambiente de desarrollo porque es lo que ellos ocupan nomás, no vayamos a borrar algo ahí por error y nos mandamos cagados, después nos escondimos buen de ajo a la mesa nomás, como la wea no tiene log y ocupan una pura cuenta, nosotros nos fuimos.
+

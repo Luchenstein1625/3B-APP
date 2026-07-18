@@ -1,0 +1,176 @@
+1
+00:00:00,340 --> 00:00:07,840
+buena lucha oye te tengo noticias hable con raúl ya me estoy explicando un par de cosas todas esas
+
+2
+00:00:07,840 --> 00:00:12,940
+cosas que aparecen ahí nos va a mandar las fotos ok así que ahí está la espera que me las mande
+
+3
+00:00:12,940 --> 00:00:21,520
+lo otro o sea para dejar cargado y como el mantener de los vehículos y dos agüeras cierto
+
+4
+00:00:21,520 --> 00:00:25,080
+los que dicen en preparación
+
+5
+00:00:25,080 --> 00:00:27,220
+en ruta, cierto, entregado
+
+6
+00:00:27,220 --> 00:00:28,660
+al final
+
+7
+00:00:28,660 --> 00:00:31,200
+no es que sean distintos
+
+8
+00:00:31,200 --> 00:00:32,160
+mantenedores
+
+9
+00:00:32,160 --> 00:00:33,680
+es el mismo
+
+10
+00:00:33,680 --> 00:00:35,940
+pero al final
+
+11
+00:00:35,940 --> 00:00:39,040
+vendría siendo
+
+12
+00:00:39,040 --> 00:00:40,200
+por decirte algo
+
+13
+00:00:40,200 --> 00:00:42,560
+no es que sea un mantenedor de entregados
+
+14
+00:00:42,560 --> 00:00:43,760
+un mantenedor en ruta
+
+15
+00:00:43,760 --> 00:00:46,980
+es una sola entidad
+
+16
+00:00:46,980 --> 00:00:48,860
+que vendría siendo como
+
+17
+00:00:48,860 --> 00:00:50,740
+estado ruta
+
+18
+00:00:50,740 --> 00:00:52,840
+no sé cómo llamarle, pero ponte tú
+
+19
+00:00:52,840 --> 00:00:54,200
+que es en estados de ruta
+
+20
+00:00:54,200 --> 00:00:56,820
+entonces, ese estado
+
+21
+00:00:56,820 --> 00:00:58,860
+de ruta va a cambiar y cuando
+
+22
+00:00:58,860 --> 00:01:00,880
+yo le pincho en preparación
+
+23
+00:01:00,880 --> 00:01:02,780
+me muestra solamente los que están en preparación
+
+24
+00:01:02,780 --> 00:01:04,500
+pero viene siendo la misma lista, o sea
+
+25
+00:01:04,500 --> 00:01:06,840
+técnicamente el mantener se repite las tres
+
+26
+00:01:06,840 --> 00:01:08,440
+veces que está ahí, es el mismo
+
+27
+00:01:08,440 --> 00:01:10,700
+entonces
+
+28
+00:01:10,700 --> 00:01:12,780
+lo único que hace es filtrar
+
+29
+00:01:12,780 --> 00:01:14,180
+cuando yo selecciono en preparación
+
+30
+00:01:14,180 --> 00:01:16,760
+por los estados
+
+31
+00:01:16,760 --> 00:01:17,620
+de ruta que están
+
+32
+00:01:17,620 --> 00:01:19,800
+en preparación
+
+33
+00:01:19,800 --> 00:01:23,040
+Así que igual lo encontré buena onda
+
+34
+00:01:23,040 --> 00:01:24,880
+Porque como que hacemos uno puro
+
+35
+00:01:24,880 --> 00:01:26,020
+Y el resto lo replicamos
+
+36
+00:01:26,020 --> 00:01:29,200
+Así que bien por ese lado
+
+37
+00:01:29,200 --> 00:01:32,860
+Me quedaron de confirmar
+
+38
+00:01:32,860 --> 00:01:35,440
+La diferencia entre el inicio y el inicio 3B
+
+39
+00:01:35,440 --> 00:01:36,580
+Que es la misma wea
+
+40
+00:01:36,580 --> 00:01:38,100
+Como que está repetido en todo caso
+
+41
+00:01:38,100 --> 00:01:41,100
+Pero eso, ahí si tenéis dudas
+
+42
+00:01:41,100 --> 00:01:42,620
+Después lo conversamos
+
+43
+00:01:42,620 --> 00:01:44,620
+Y te aviso cuando nos lleguen las fotitos
+
+44
+00:01:44,620 --> 00:01:44,980
+¿Vale?
+
