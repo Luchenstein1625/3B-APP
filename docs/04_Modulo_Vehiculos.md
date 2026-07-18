@@ -1108,4 +1108,960 @@ Se documentará:
 - Fotografías principales.
 - Datos asociados al vehículo.
 
+# 3B APP
+# Módulo Vehículos
 
+**Versión:** 1.0
+
+**Documento:** 04_Modulo_Vehiculos.md
+
+**Parte:** 3 de 8
+
+---
+
+# Formulario de Vehículos
+
+El formulario permite registrar y modificar la información asociada a cada vehículo.
+
+Debe utilizarse tanto para la creación de nuevos registros como para la actualización de vehículos existentes.
+
+---
+
+# Objetivos del Formulario
+
+El formulario debe permitir:
+
+- Registrar un nuevo vehículo.
+- Editar un vehículo existente.
+- Consultar información en modo lectura.
+- Validar campos obligatorios.
+- Evitar registros duplicados.
+- Asociar imágenes y documentos.
+- Guardar trazabilidad de creación y modificación.
+- Mantener consistencia entre los distintos estados operacionales.
+
+---
+
+# Modos del Formulario
+
+El formulario puede operar en tres modos.
+
+| Modo | Descripción |
+|---|---|
+| Nuevo | Permite crear un vehículo. |
+| Editar | Permite modificar un vehículo existente. |
+| Consulta | Muestra la información sin permitir cambios. |
+
+Variable propuesta:
+
+```powerapps
+varModoFormulario
+```
+
+Valores posibles:
+
+```text
+Nuevo
+
+Editar
+
+Consulta
+```
+
+---
+
+# Control Principal
+
+Se propone utilizar un formulario de Power Apps.
+
+```text
+frmVehiculo
+```
+
+Propiedad `Item`:
+
+```powerapps
+varVehiculoSeleccionado
+```
+
+---
+
+# Cambio de Modo
+
+## Nuevo
+
+```powerapps
+NewForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Nuevo"
+);;
+
+Set(
+    varVehiculoSeleccionado;
+    Blank()
+)
+```
+
+---
+
+## Editar
+
+```powerapps
+EditForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Editar"
+)
+```
+
+---
+
+## Consulta
+
+```powerapps
+ViewForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Consulta"
+)
+```
+
+---
+
+# Estructura Propuesta del Formulario
+
+El formulario puede dividirse en bloques funcionales.
+
+```text
+Formulario Vehículo
+
+│
+
+├── Identificación
+
+├── Características generales
+
+├── Información operacional
+
+├── Responsable y ubicación
+
+├── Documentación
+
+├── Fotografías
+
+├── Observaciones
+
+└── Auditoría
+```
+
+---
+
+# Distribución Visual
+
+```text
++-----------------------------------------------------------------------+
+
+                        DATOS DEL VEHÍCULO
+
++-----------------------------------------------------------------------+
+
+| Patente                    | Código interno                           |
+
+| Marca                      | Modelo                                  |
+
+| Año                        | Tipo                                    |
+
+| Estado                     | Ubicación                               |
+
+| Responsable                | Fecha de ingreso                        |
+
++-----------------------------------------------------------------------+
+
+| Observaciones                                                       |
+
+|                                                                       |
+
++-----------------------------------------------------------------------+
+
+| Fotografía principal       | Documentos asociados                    |
+
++-----------------------------------------------------------------------+
+
+| Cancelar                                   Guardar                    |
+
++-----------------------------------------------------------------------+
+```
+
+La distribución definitiva deberá respetar el diseño visual de la aplicación original y adaptarse a la experiencia de escritorio definida para Power Apps.
+
+---
+
+# Sección Identificación
+
+Esta sección contiene la información utilizada para identificar de manera única al vehículo.
+
+## Campos Propuestos
+
+| Campo | Tipo de dato | Obligatorio | Descripción |
+|---|---|---:|---|
+| ID | Número | Sí | Identificador interno generado por la fuente de datos. |
+| Código interno | Texto | Por confirmar | Código utilizado por la organización. |
+| Patente | Texto | Sí | Identificador principal visible del vehículo. |
+| Nombre o descripción | Texto | Por confirmar | Nombre descriptivo del registro. |
+
+---
+
+# Campo ID
+
+El identificador debe ser generado automáticamente por SharePoint.
+
+No debe ser editable por el usuario.
+
+Control propuesto:
+
+```text
+lblVehiculoId
+```
+
+Valor:
+
+```powerapps
+varVehiculoSeleccionado.ID
+```
+
+---
+
+# Campo Patente
+
+La patente representa uno de los principales criterios de identificación y búsqueda.
+
+Control propuesto:
+
+```text
+txtPatente
+```
+
+## Comportamiento
+
+- Convertir el valor a mayúsculas.
+- Eliminar espacios innecesarios.
+- Validar que no exista otro vehículo con la misma patente.
+- No permitir guardar un registro vacío.
+- Mantener un formato consistente.
+
+Ejemplo de normalización:
+
+```powerapps
+Upper(
+    Trim(txtPatente.Text)
+)
+```
+
+---
+
+# Validación de Duplicidad
+
+Ejemplo propuesto:
+
+```powerapps
+If(
+    CountRows(
+        Filter(
+            Vehiculos;
+            Patente = Upper(Trim(txtPatente.Text))
+                &&
+            ID <> Coalesce(varVehiculoSeleccionado.ID; 0)
+        )
+    ) > 0;
+    Notify(
+        "Ya existe un vehículo registrado con esta patente.";
+        NotificationType.Error
+    )
+)
+```
+
+La validación debe excluir el registro actual cuando el formulario se encuentre en modo edición.
+
+---
+
+# Campo Código Interno
+
+Control propuesto:
+
+```text
+txtCodigoInterno
+```
+
+El código interno puede utilizarse como identificador complementario.
+
+Validaciones propuestas:
+
+- Eliminar espacios al inicio y al final.
+- Validar duplicidad cuando el negocio lo requiera.
+- Mantener formato uniforme.
+- Impedir caracteres no válidos, si corresponde.
+
+---
+
+# Sección Características Generales
+
+Esta sección contiene los atributos descriptivos del vehículo.
+
+## Campos Propuestos
+
+| Campo | Tipo | Control sugerido |
+|---|---|---|
+| Marca | Opción o búsqueda | `cmbMarca` |
+| Modelo | Texto o búsqueda | `cmbModelo` / `txtModelo` |
+| Año | Número | `txtAnio` |
+| Tipo de vehículo | Opción | `cmbTipoVehiculo` |
+| Color | Texto u opción | `cmbColor` |
+| Número de chasis | Texto | `txtNumeroChasis` |
+| Número de motor | Texto | `txtNumeroMotor` |
+| Kilometraje | Número | `txtKilometraje` |
+
+> Los campos definitivos deberán confirmarse contra la aplicación original y su fuente de datos.
+
+---
+
+# Campo Marca
+
+Control recomendado:
+
+```text
+cmbMarca
+```
+
+Items:
+
+```powerapps
+Sort(
+    colMarcas;
+    Nombre;
+    SortOrder.Ascending
+)
+```
+
+Debe permitirse seleccionar una marca válida desde un catálogo.
+
+Cuando la marca no exista, su creación deberá depender de los permisos definidos para el usuario.
+
+---
+
+# Campo Modelo
+
+El modelo podrá depender de la marca seleccionada.
+
+Ejemplo:
+
+```powerapps
+Filter(
+    colModelos;
+    MarcaId = cmbMarca.Selected.ID
+)
+```
+
+Esto permite impedir combinaciones inválidas entre marca y modelo.
+
+---
+
+# Campo Año
+
+Control propuesto:
+
+```text
+txtAnio
+```
+
+Validaciones:
+
+- Debe ser numérico.
+- Debe tener cuatro dígitos.
+- No debe ser menor al año mínimo definido por el negocio.
+- No debe exceder de forma injustificada el año actual.
+
+Ejemplo:
+
+```powerapps
+If(
+    !IsNumeric(txtAnio.Text);
+    Notify(
+        "El año debe ser numérico.";
+        NotificationType.Error
+    )
+)
+```
+
+---
+
+# Campo Tipo de Vehículo
+
+Control recomendado:
+
+```text
+cmbTipoVehiculo
+```
+
+Valores de ejemplo:
+
+```text
+Automóvil
+
+Camioneta
+
+Camión
+
+Furgón
+
+Motocicleta
+
+Otro
+```
+
+Los valores definitivos deberán administrarse mediante una lista de opciones o un catálogo independiente.
+
+---
+
+# Campo Kilometraje
+
+Control propuesto:
+
+```text
+txtKilometraje
+```
+
+Validaciones:
+
+- Solo valores numéricos.
+- No permitir valores negativos.
+- Verificar que el nuevo kilometraje no sea menor al previamente registrado, salvo autorización.
+- Mantener unidad de medida consistente.
+
+Ejemplo:
+
+```powerapps
+If(
+    Value(txtKilometraje.Text) < 0;
+    Notify(
+        "El kilometraje no puede ser negativo.";
+        NotificationType.Error
+    )
+)
+```
+
+---
+
+# Sección Información Operacional
+
+Esta sección registra la situación operacional actual del vehículo.
+
+## Campos Propuestos
+
+| Campo | Tipo | Descripción |
+|---|---|---|
+| Estado | Opción | Estado actual del vehículo. |
+| Fecha de ingreso | Fecha | Fecha en que se incorporó al sistema. |
+| Fecha de disponibilidad | Fecha | Fecha estimada o efectiva de disponibilidad. |
+| Estado de ruta | Opción | Estado operacional utilizado por los filtros del sistema. |
+| Activo | Sí/No | Indica si el registro continúa vigente. |
+
+---
+
+# Regla de Estados Operacionales
+
+Los estados:
+
+```text
+En preparación
+
+En ruta
+
+Entregado
+```
+
+no deben modelarse como entidades independientes.
+
+Corresponden a filtros aplicados sobre la tabla o lista principal de vehículos.
+
+Ejemplo conceptual:
+
+```powerapps
+Filter(
+    colVehiculos;
+    EstadoRuta = varEstado
+)
+```
+
+Por lo tanto, el formulario deberá guardar el estado operacional en el registro del vehículo o en la relación operacional que se defina en el modelo de datos.
+
+---
+
+# Campo Estado
+
+Control propuesto:
+
+```text
+cmbEstadoVehiculo
+```
+
+Ejemplos de estado general:
+
+```text
+Activo
+
+Disponible
+
+En mantenimiento
+
+Fuera de servicio
+
+Inactivo
+```
+
+El estado general del vehículo no debe confundirse con el estado de ruta.
+
+---
+
+# Campo Estado de Ruta
+
+Control propuesto:
+
+```text
+cmbEstadoRuta
+```
+
+Valores identificados para el flujo:
+
+```text
+En preparación
+
+En ruta
+
+Entregado
+```
+
+Podrá existir además un valor inicial, por ejemplo:
+
+```text
+Sin asignar
+```
+
+La existencia y nombre exacto de ese estado inicial deberá confirmarse.
+
+---
+
+# Sección Responsable y Ubicación
+
+Esta sección permite identificar quién tiene asignado o administra el vehículo y dónde se encuentra.
+
+## Campos Propuestos
+
+| Campo | Tipo | Control sugerido |
+|---|---|---|
+| Responsable | Persona o búsqueda | `cmbResponsable` |
+| Conductor | Persona o búsqueda | `cmbConductor` |
+| Ubicación | Opción o búsqueda | `cmbUbicacion` |
+| Sucursal | Opción o búsqueda | `cmbSucursal` |
+
+---
+
+# Campo Responsable
+
+El campo podrá utilizar una columna Persona de SharePoint.
+
+Control:
+
+```text
+cmbResponsable
+```
+
+Items de ejemplo:
+
+```powerapps
+Office365Users.SearchUser(
+    {
+        searchTerm: cmbResponsable.SearchText;
+        top: 25
+    }
+)
+```
+
+La fuente definitiva dependerá de si el responsable corresponde a un usuario corporativo o a una entidad propia de la aplicación.
+
+---
+
+# Campo Ubicación
+
+Control:
+
+```text
+cmbUbicacion
+```
+
+La ubicación debe seleccionarse desde un catálogo controlado.
+
+Esto evita diferencias como:
+
+```text
+Bodega Central
+
+bodega central
+
+Bodega central
+```
+
+---
+
+# Sección Observaciones
+
+Control propuesto:
+
+```text
+txtObservacionesVehiculo
+```
+
+Características:
+
+- Campo de texto multilínea.
+- No debe reemplazar campos estructurados.
+- Puede registrar información complementaria.
+- Debe limitarse a una cantidad razonable de caracteres.
+- No debe utilizarse para guardar información crítica que requiera búsqueda o filtrado.
+
+Ejemplo:
+
+```powerapps
+MaxLength = 2000
+```
+
+---
+
+# Sección Auditoría
+
+Los datos de auditoría deben ser generados automáticamente.
+
+| Campo | Origen |
+|---|---|
+| Creado | SharePoint |
+| Creado por | SharePoint |
+| Modificado | SharePoint |
+| Modificado por | SharePoint |
+| Fecha de registro operacional | Aplicación o SharePoint |
+| Usuario de la acción | `User()` o SharePoint |
+
+No deberán ser editables desde el formulario funcional.
+
+---
+
+# Botones del Formulario
+
+## Guardar
+
+Control:
+
+```text
+btnGuardarVehiculo
+```
+
+Acción general:
+
+```powerapps
+SubmitForm(frmVehiculo)
+```
+
+---
+
+## Cancelar
+
+Control:
+
+```text
+btnCancelarVehiculo
+```
+
+Acción:
+
+```powerapps
+ResetForm(frmVehiculo);;
+
+ViewForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Consulta"
+)
+```
+
+---
+
+## Editar
+
+Control:
+
+```text
+btnEditarVehiculo
+```
+
+Acción:
+
+```powerapps
+EditForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Editar"
+)
+```
+
+---
+
+## Cerrar
+
+El botón Cerrar debe ocultar el panel o regresar al listado sin cambiar el módulo principal.
+
+Ejemplo:
+
+```powerapps
+Set(
+    varVehiculoSeleccionado;
+    Blank()
+);;
+
+Set(
+    varModoFormulario;
+    "Consulta"
+)
+```
+
+---
+
+# Validación General Antes de Guardar
+
+Antes de ejecutar `SubmitForm`, deberán validarse las reglas adicionales que no estén cubiertas por las propiedades obligatorias del formulario.
+
+Ejemplo:
+
+```powerapps
+If(
+    IsBlank(Trim(txtPatente.Text));
+    Notify(
+        "Debe ingresar la patente.";
+        NotificationType.Error
+    );
+
+    IsBlank(cmbMarca.Selected);
+    Notify(
+        "Debe seleccionar una marca.";
+        NotificationType.Error
+    );
+
+    CountRows(
+        Filter(
+            Vehiculos;
+            Patente = Upper(Trim(txtPatente.Text))
+                &&
+            ID <> Coalesce(varVehiculoSeleccionado.ID; 0)
+        )
+    ) > 0;
+    Notify(
+        "La patente ya se encuentra registrada.";
+        NotificationType.Error
+    );
+
+    SubmitForm(frmVehiculo)
+)
+```
+
+---
+
+# Evento OnSuccess
+
+Cuando el formulario se guarde correctamente:
+
+```powerapps
+Notify(
+    If(
+        varModoFormulario = "Nuevo";
+        "Vehículo registrado correctamente.";
+        "Vehículo actualizado correctamente."
+    );
+    NotificationType.Success
+);;
+
+Refresh(Vehiculos);;
+
+Set(
+    varVehiculoSeleccionado;
+    frmVehiculo.LastSubmit
+);;
+
+ViewForm(frmVehiculo);;
+
+Set(
+    varModoFormulario;
+    "Consulta"
+)
+```
+
+---
+
+# Evento OnFailure
+
+```powerapps
+Notify(
+    "No fue posible guardar la información del vehículo. Revise los campos e intente nuevamente.";
+    NotificationType.Error
+)
+```
+
+También deberá evaluarse el contenido de:
+
+```powerapps
+frmVehiculo.Error
+```
+
+para presentar una explicación más específica cuando sea posible.
+
+---
+
+# Habilitación de Controles
+
+Los campos solo deberán estar habilitados en los modos Nuevo o Editar.
+
+Ejemplo:
+
+```powerapps
+DisplayMode =
+If(
+    varModoFormulario = "Consulta";
+    DisplayMode.View;
+    DisplayMode.Edit
+)
+```
+
+---
+
+# Visibilidad de Botones
+
+## Guardar
+
+```powerapps
+Visible =
+varModoFormulario = "Nuevo"
+    ||
+varModoFormulario = "Editar"
+```
+
+## Cancelar
+
+```powerapps
+Visible =
+varModoFormulario = "Nuevo"
+    ||
+varModoFormulario = "Editar"
+```
+
+## Editar
+
+```powerapps
+Visible =
+varModoFormulario = "Consulta"
+    &&
+!IsBlank(varVehiculoSeleccionado)
+```
+
+---
+
+# Prevención de Pérdida de Cambios
+
+Si el formulario contiene cambios sin guardar, la aplicación deberá evitar cerrar el detalle de manera accidental.
+
+Propiedad útil:
+
+```powerapps
+frmVehiculo.Unsaved
+```
+
+Ejemplo:
+
+```powerapps
+If(
+    frmVehiculo.Unsaved;
+    Set(
+        varMostrarConfirmacionSalida;
+        true
+    );
+    Set(
+        varVehiculoSeleccionado;
+        Blank()
+    )
+)
+```
+
+---
+
+# Confirmación de Cancelación
+
+```text
+Existen cambios sin guardar.
+
+¿Desea descartarlos?
+
+[Continuar editando]
+
+[Descartar cambios]
+```
+
+---
+
+# Reglas Iniciales del Formulario
+
+| Código | Regla |
+|---|---|
+| RV-FOR-001 | La patente no puede quedar vacía. |
+| RV-FOR-002 | No deben existir dos vehículos activos con la misma patente. |
+| RV-FOR-003 | Los campos de catálogo deben seleccionarse desde valores válidos. |
+| RV-FOR-004 | El kilometraje no puede ser negativo. |
+| RV-FOR-005 | Los datos de auditoría no son editables. |
+| RV-FOR-006 | En modo consulta los campos deben permanecer bloqueados. |
+| RV-FOR-007 | Los cambios deben confirmarse antes de abandonar el formulario. |
+| RV-FOR-008 | El estado de ruta se almacena como atributo del vehículo o de su operación asociada. |
+| RV-FOR-009 | En preparación, En ruta y Entregado funcionan como filtros, no como tablas independientes. |
+
+---
+
+# Campos Pendientes de Confirmación
+
+| Estado | Campo o regla | Observación |
+|---|---|---|
+| ❓ | Código interno | Confirmar existencia y obligatoriedad. |
+| ❓ | Número de chasis | Confirmar si se administra en la aplicación actual. |
+| ❓ | Número de motor | Confirmar si se administra en la aplicación actual. |
+| ❓ | Kilometraje | Confirmar si corresponde al registro maestro o a otra operación. |
+| ❓ | Conductor | Confirmar si es parte del vehículo o de una asignación. |
+| ❓ | Responsable | Confirmar fuente y relación. |
+| ❓ | Estado general | Identificar catálogo exacto. |
+| ❓ | Estado inicial de ruta | Confirmar nombre y comportamiento. |
+| ❓ | Fecha de ingreso | Confirmar si es ingresada por el usuario o automática. |
+| ❓ | Campos obligatorios | Validar contra la aplicación de referencia. |
+
+---
+
+# Próxima Parte
+
+**Parte 4 de 8**
+
+Se documentará:
+
+- Fotografías del vehículo.
+- Imagen principal.
+- Galería de imágenes.
+- Documentos adjuntos.
+- Carga, consulta y eliminación de archivos.
+- Estructura recomendada en SharePoint.
+- Validaciones de formato y tamaño.
+- Componentes multimedia en Power Apps.
